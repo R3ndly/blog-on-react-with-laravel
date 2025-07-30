@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  laravel:
+    build: ./blog-api
+    container_name: blog-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./blog-api:/var/www
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=test_task
+      - DB_USERNAME=root
+      - DB_PASSWORD=Q1qqqqqq
+    depends_on:
+      - mysql
+
+  react:
+    build: ./blog-frontend
+    container_name: blog-frontend
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./blog-frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api
+    depends_on:
+      - laravel
+
+  mysql:
+    image: mysql:8.0
+    container_name: blog-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Q1qqqqqq
+      MYSQL_DATABASE: test_task
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
